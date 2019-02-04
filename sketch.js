@@ -25,8 +25,6 @@ function setup(){
 function draw(){
     background(0);
 
-    fill(255);
-    rect(0, 0, 10, 10);
     //Update position
     dx = dy = 0;
     if(direction == 0){
