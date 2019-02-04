@@ -58,7 +58,7 @@ function draw(){
     //Collision checking
     //Edges
     // Figure out whats wrong ------------------------------------------------------
-    if(snake[head].x-1 == -1 || snake[head].x+1 == nBlocks || snake[head].y-1 == -1 || snake[head].y+1 == nBlocks){
+    if(snake[head].x < 0 || snake[head].x+1 > nBlocks || snake[head].y < 0 || snake[head].y+1 > nBlocks){
         gameOver();
     }
     //Food
