@@ -1,6 +1,6 @@
 let p = document.createElement("p");
-let blockWidth = 16;
-let blockHeight = 16;
+let blockWidth = 32;
+let blockHeight = 32;
 let nBlocks;
 let snake = [];
 let direction = 1;
