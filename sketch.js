@@ -18,7 +18,9 @@ let muff;
 function setup(){
     createCanvas(640, 640);
     muff = loadImage("images/muffin.png");
-    
+    coffee = loadImage("images/coffee.png")
+    turkey = loadImage("images/turkey.png")
+
     p.style.display = "block";
     document.getElementsByTagName("body")[0].appendChild(p);
 
@@ -222,11 +224,11 @@ class Food{
         }
         else if(this.type == "half"){
             frameCount % 10 < 4 ? fill(100, 0, 0) : fill(255, 0, 0);
-            rect(this.pos.x*blockWidth, this.pos.y*blockHeight, blockWidth, blockHeight);
+            image(turkey, this.pos.x*blockWidth, this.pos.y*blockHeight, blockWidth, blockHeight);
         }
         else if(this.type == "speedup"){
             frameCount % 10 > 5 ? fill(0, 0, 100) : fill(0, 0, 255);
-            rect(this.pos.x*blockWidth, this.pos.y*blockHeight, blockWidth, blockHeight);
+            image(coffee, this.pos.x*blockWidth, this.pos.y*blockHeight, blockWidth, blockHeight);
         }
         
     }
