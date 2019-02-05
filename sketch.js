@@ -17,7 +17,7 @@ let muff;
 
 function setup(){
     createCanvas(640, 640);
-    muff = loadImage("images/muffin.bmp");
+    muff = loadImage("images/muffin.png");
     
     p.style.display = "block";
     document.getElementsByTagName("body")[0].appendChild(p);
