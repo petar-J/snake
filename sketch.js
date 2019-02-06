@@ -1,6 +1,6 @@
 let p = document.createElement("p");
-let blockWidth = 32;
-let blockHeight = 32;
+let blockWidth = 16;
+let blockHeight = 16;
 let nBlocks;
 let snake = [];
 let direction = 1;
@@ -13,13 +13,26 @@ let food = [];
 let eaten;
 let pressed;
 let score = head+1;
-let muff;
+let muff, coffee, turkey;
+let heads = [];
+let bodies = [];
+let tails = [];
+let corners = [];
+
 
 function setup(){
     createCanvas(640, 640);
     muff = loadImage("images/muffin.png");
     coffee = loadImage("images/coffee.png")
     turkey = loadImage("images/turkey.png")
+    for(let i = 0; i<4; i++){
+        if(i<2){
+            bodies.push(loadImage("images/body"+i+".png"));
+        }
+        heads.push(loadImage("images/head"+i+".png"));
+        tails.push(loadImage("images/tail"+i+".png"));
+        corners.push(loadImage("images/corner"+i+".png"));
+    }
 
     p.style.display = "block";
     document.getElementsByTagName("body")[0].appendChild(p);
@@ -84,7 +97,7 @@ function draw(){
                 //Cut length in half and slow down
                 frameRate(frameRate()*2/3);
                 food.splice(i,1);
-                snake.splice(0, snake.length/2);
+                snake.splice(0, head/2);
                 head = snake.length-1;
                 continue;
             }
@@ -116,14 +129,30 @@ function draw(){
     }
 
 
-    // Display
+    // Display  (Food and Snake)  Add score to the top left corner
     for(let i = 0; i<food.length; i++){
         food[i].show()
     }
-
     for(let i = 0; i<snake.length; i++){
-        dead && i == head ? fill(0, 0, 255) : (i == head ? fill(255, 0, 0) : fill(255));
-        rect(snake[i].x*blockWidth, snake[i].y*blockHeight, blockWidth, blockHeight);
+        if(i == 0){
+            //Tail
+            let dir;
+            if(snake[1].x == snake[0].x){
+                dir = snake[1].y - snake[0].y == 1 ? 2 : 0; 
+            }
+            else{
+                dir = snake[1].x - snake[0].x == 1 ? 1 : 3;
+            }
+            image(tails[dir], snake[0].x*blockWidth, snake[0].y*blockHeight, blockWidth, blockHeight);
+        }
+        else if(i == head){
+            //Head
+            image(heads[direction], snake[head].x*blockWidth, snake[head].y*blockHeight, blockWidth, blockHeight);
+        }
+        else{
+            //Body
+            drawBody(i);
+        }
     }
 
     //Add food if needed
@@ -194,6 +223,47 @@ function pickPos(){
 
 function newFood(type){
     return new Food(type, pickPos());
+}
+
+function drawBody(i){
+    let dir;
+    let n = abs(snake[i+1].x - snake[i-1].x);
+    if(n == 1){
+        //Corner
+        dir = 0;
+        let x0 = snake[i].x; let x1 = snake[i-1].x; let x2 = snake[i+1].x;
+        let y0 = snake[i].y; let y1 = snake[i-1].y; let y2 = snake[i+1].y;
+        let dx = x2 - x1;
+        let dy = y2 - y1;
+        let dx0 = x0 - x1;
+        if(dx > 0 && dy > 0){
+            if(dx0 == 0) dir = 3;
+            else dir = 2;
+        }
+        if(dx > 0 && dy < 0){
+            if(dx0 == 0) dir = 1;
+            else dir = 0;
+        }
+        if(dx < 0 && dy > 0){
+            if(dx0 == 0) dir = 0;
+            else dir = 1;
+        }
+        if(dx < 0 && dy < 0){
+            if(dx0 == 0) dir = 2;
+            else dir = 3;
+        }
+
+        image(corners[dir], snake[i].x*blockWidth, snake[i].y*blockHeight, blockWidth, blockHeight);
+        // fill(255);
+        // rect(snake[i].x*blockWidth, snake[i].y*blockHeight, blockWidth, blockHeight);
+    }
+    else{
+        //Normal
+        //n == 0 ? horizontal : vertical
+        n == 0 ? dir = 0 : dir = 1;
+        image(bodies[dir], snake[i].x*blockWidth, snake[i].y*blockHeight, blockWidth, blockHeight);
+    }
+    
 }
 
 
