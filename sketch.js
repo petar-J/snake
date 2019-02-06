@@ -19,12 +19,10 @@ let bodies = [];
 let tails = [];
 let corners = [];
 
-
-function setup(){
-    createCanvas(640, 640);
+function preload(){
     muff = loadImage("images/muffin.png");
-    coffee = loadImage("images/coffee.png")
-    turkey = loadImage("images/turkey.png")
+    coffee = loadImage("images/coffee.png");
+    turkey = loadImage("images/turkey.png");
     for(let i = 0; i<4; i++){
         if(i<2){
             bodies.push(loadImage("images/body"+i+".png"));
@@ -33,7 +31,11 @@ function setup(){
         tails.push(loadImage("images/tail"+i+".png"));
         corners.push(loadImage("images/corner"+i+".png"));
     }
+    font = loadFont("fonts/font.ttf");
 
+}
+function setup(){
+    createCanvas(640, 640);
     p.style.display = "block";
     document.getElementsByTagName("body")[0].appendChild(p);
 
@@ -44,6 +46,9 @@ function setup(){
     frameRate(20);
 
     food.push(newFood("food"));
+    textSize(16);
+    textFont(font);
+    textAlign(LEFT);
 }
 
 function draw(){
@@ -102,7 +107,7 @@ function draw(){
                 continue;
             }
             else if(food[i].type == "speedup"){
-                frameRate(frameRate()+1);
+                frameRate(frameRate()+3);
                 food.splice(i,1);
                 continue;
             }
@@ -129,7 +134,9 @@ function draw(){
     }
 
 
-    // Display  (Food and Snake)  Add score to the top left corner
+    // Display  (Food and Snake)  
+    fill(255);
+    text("Score: "+score, 2, 16);
     for(let i = 0; i<food.length; i++){
         food[i].show()
     }
