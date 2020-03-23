@@ -170,7 +170,7 @@ function draw(){
         rect(nBlocks/2*blockWidth, nBlocks/2*blockHeight, blockWidth*20, blockHeight*10);
         rectMode(CORNER);
         fill(0);
-        text("Your score was "+score, width/2-blockWidth*7, height/2-blockHeight*4);
+        text("Your score was "+score, width/2-blockWidth*5, height/2-blockHeight*2);
         text("Click to restart", width/2-blockWidth*5, height/2);
         
     }
