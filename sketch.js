@@ -167,10 +167,11 @@ function draw(){
     else{
         rectMode(CENTER);
         fill(255);
-        rect(nBlocks/2*blockWidth, nBlocks/2*blockHeight, blockWidth*20, blockHeight*5);
+        rect(nBlocks/2*blockWidth, nBlocks/2*blockHeight, blockWidth*20, blockHeight*10);
         rectMode(CORNER);
-        text("Your score was "+score, width/2, height/2-blockHeight*4);
-        text("Click to restart", width/2, height/2);
+        fill(0);
+        text("Your score was "+score, width/2-blockWidth*7, height/2-blockHeight*4);
+        text("Click to restart", width/2-blockWidth*5, height/2);
         
     }
 
