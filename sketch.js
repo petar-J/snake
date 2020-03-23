@@ -50,89 +50,129 @@ function setup(){
     textFont(font);
     textAlign(LEFT);
 }
+function reSetup(){
+    snake = [];
+    direction = 1;
+    dx = dy = 0;
+    dead = false;
+    head = 2;
+    food = [];
+    eaten = false;
+    pressed = false;
+    score = head+1;
+    snake.push(new Vec(nBlocks/2, nBlocks/2));
+    snake.push(new Vec(nBlocks/2+1, nBlocks/2));
+    snake.push(new Vec(nBlocks/2+2, nBlocks/2));
+    food.push(newFood("food"));
+}
 
 function draw(){
     background(0);
     pressed = false;
+    
+    if(!dead){
 
-    //Update position
-    dx = dy = 0;
-    if(direction == 0){
-        dy = -1;
-    }
-    else if(direction == 1){
-        dx = 1;
-    }
-    else if(direction == 2){
-        dy = 1;
-    }
-    else if(direction == 3){
-        dx = -1;
-    }
-
-    //Move snake
-    let newPiece = new Vec(snake[head].x+dx, snake[head].y+dy);
-    if(!eaten){
-        snake.splice(0, 1);
-    }
-    else {
-        eaten = false;
-        score++;
-        head++;
-    }
-    snake.push(newPiece);
-
-
-    //Collision checking
-    //Edges
-    if(snake[head].x < 0 || snake[head].x+1 > nBlocks || snake[head].y < 0 || snake[head].y+1 > nBlocks){
-        eaten = true;
-        gameOver();
-    }
-    //Food
-    for(let i = 0; i<food.length; i++){
-        if(snake[head].x == food[i].pos.x && snake[head].y == food[i].pos.y){
-            if(food[i].type == "food"){
-                //Allow it to get bigger
-                food[i] = newFood("food");
-                eaten = true;
-                console.log("head collided with food",i)
-            }
-            else if(food[i].type == "half"){
-                //Cut length in half and slow down
-                frameRate(frameRate()*2/3);
-                food.splice(i,1);
-                snake.splice(0, head/2);
-                head = snake.length-1;
-                continue;
-            }
-            else if(food[i].type == "speedup"){
-                frameRate(frameRate()+3);
-                food.splice(i,1);
-                continue;
-            }
+        //Update position
+        dx = dy = 0;
+        if(direction == 0){
+            dy = -1;
+        }
+        else if(direction == 1){
+            dx = 1;
+        }
+        else if(direction == 2){
+            dy = 1;
+        }
+        else if(direction == 3){
+            dx = -1;
         }
 
-        //Remove foods ---------------------------
-        if(food[i].type == "half"){
-            if(frameCount - food[i].count > 200){
-                food.splice(i,1);
-            }
+        //Move snake
+        let newPiece = new Vec(snake[head].x+dx, snake[head].y+dy);
+        if(!eaten){
+            snake.splice(0, 1);
         }
-        else if(food[i].type == "speedup"){
-            if(frameCount - food[i].count > 200){
-                food.splice(i,1);
-            }
+        else {
+            eaten = false;
+            score++;
+            head++;
         }
-    }
-    //Self
-    for(let i = 0; i<head; i++){
-        if(snake[head].x == snake[i].x && snake[head].y == snake[i].y){
-            console.log(i);
+        snake.push(newPiece);
+
+
+        //Collision checking
+        //Edges
+        if(snake[head].x < 0 || snake[head].x+1 > nBlocks || snake[head].y < 0 || snake[head].y+1 > nBlocks){
+            eaten = true;
             gameOver();
         }
-    }
+        //Food
+        for(let i = 0; i<food.length; i++){
+            if(snake[head].x == food[i].pos.x && snake[head].y == food[i].pos.y){
+                if(food[i].type == "food"){
+                    //Allow it to get bigger
+                    food[i] = newFood("food");
+                    eaten = true;
+                    console.log("head collided with food",i)
+                }
+                else if(food[i].type == "half"){
+                    //Cut length in half and slow down
+                    frameRate(frameRate()*2/3);
+                    food.splice(i,1);
+                    snake.splice(0, head/2);
+                    head = snake.length-1;
+                    continue;
+                }
+                else if(food[i].type == "speedup"){
+                    frameRate(frameRate()+3);
+                    food.splice(i,1);
+                    continue;
+                }
+            }
 
+            //Remove foods ---------------------------
+            if(food[i].type == "half"){
+                if(frameCount - food[i].count > 200){
+                    food.splice(i,1);
+                }
+            }
+            else if(food[i].type == "speedup"){
+                if(frameCount - food[i].count > 200){
+                    food.splice(i,1);
+                }
+            }
+        }
+        //Self
+        for(let i = 0; i<head; i++){
+            if(snake[head].x == snake[i].x && snake[head].y == snake[i].y){
+                console.log(i);
+                gameOver();
+            }
+        }
+
+        //Add food if needed
+        if(food.length+1 < floor(sqrt(snake.length))){
+            food.push(newFood("food"));
+        }
+        if(score % 10 == 9){
+            food.push(newFood("half"));
+            score++;
+        }
+        if(score % 10 == 4){
+            food.push(newFood("speedup"));
+            score++;
+        }
+
+    }
+    else{
+        rectMode(CENTER);
+        fill(255);
+        rect(nBlocks/2*blockWidth, nBlocks/2*blockHeight, blockWidth*20, blockHeight*5);
+        rectMode(CORNER);
+        text("Your score was "+score, width/2, height/2-blockHeight*4);
+        text("Click to restart", width/2, height/2);
+        
+    }
 
     // Display  (Food and Snake)  
     fill(255);
@@ -162,34 +202,19 @@ function draw(){
         }
     }
 
-    //Add food if needed
-    if(food.length+1 < floor(sqrt(snake.length))){
-        food.push(newFood("food"));
-    }
-    if(score % 10 == 9){
-        food.push(newFood("half"));
-        score++;
-    }
-    if(score % 10 == 4){
-        food.push(newFood("speedup"));
-        score++;
-    }
 
 }
 
 
 function gameOver(){
     dead = true;
-    noLoop();
-    console.log("Game Over, Your score is", score);
-    p.innerHTML = "Game Over, Your score is "+score;
-    alert("Game Over, Your score is "+score);
+    //noLoop();
 }
 
 
 // Event functions -------------------------------------------------------------------------------------
 function keyPressed(){
-    if(!pressed){
+    if(!pressed && !dead){
         pressed = true;
         if(keyCode === UP_ARROW){
             if(direction != 2)
@@ -207,6 +232,10 @@ function keyPressed(){
             if(direction != 1)
                 direction = 3;
         }
+    }
+    else if(dead) {
+        dead = false;
+        reSetup();
     }
 }
 
